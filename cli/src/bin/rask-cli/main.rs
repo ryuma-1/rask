@@ -3,6 +3,7 @@ mod args;
 use anyhow::{Context, Result};
 use args::*;
 use clap::Parser;
+use rask::document::*;
 use rask::project::*;
 use rask::task::*;
 use rask::user::*;
@@ -41,6 +42,31 @@ fn main() -> Result<()> {
                     for task in &tasks {
                         println!("{:?}", task);
                     }
+                }
+            }
+        },
+        Target::Document(action) => match action {
+            DocumentAction::List(args) => {
+                let documents = Document::list().context("Failed to get Document list")?;
+
+                let searched_documents = Document::search(
+                    &documents,
+                    args.id,
+                    args.content.as_deref(),
+                    args.creator_id,
+                    args.creator_name.as_deref(),
+                    args.description.as_deref(),
+                    args.project_id,
+                    args.project_name.as_deref(),
+                    args.created_at,
+                    args.updated_at,
+                    args.start_at,
+                    args.end_at,
+                    args.term_duration,
+                );
+
+                for document in searched_documents {
+                    println!("{:?}", document);
                 }
             }
         },
