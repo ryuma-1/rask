@@ -36,7 +36,7 @@ fn main() -> Result<()> {
             }
             TaskAction::List(args) => {
                 let tasks = Task::list().context("Failed to get Task list")?;
-                if args.json {
+                if args.list.json {
                     print_json(&tasks)?;
                 } else {
                     for task in &tasks {
@@ -73,7 +73,7 @@ fn main() -> Result<()> {
         Target::User(action) => match action {
             UserAction::List(args) => {
                 let users = User::list().context("Failed to get User list")?;
-                if args.json {
+                if args.list.json {
                     print_json(&users)?;
                 } else {
                     for user in users {
@@ -85,7 +85,7 @@ fn main() -> Result<()> {
         Target::Project(action) => match action {
             ProjectAction::List(args) => {
                 let projects = Project::list().context("Failed to get Project list")?;
-                if args.json {
+                if args.list.json {
                     print_json(&projects)?;
                 } else {
                     for project in projects {
