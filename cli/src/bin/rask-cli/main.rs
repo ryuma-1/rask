@@ -9,6 +9,11 @@ use rask::task::*;
 use rask::user::*;
 use rask::Rask;
 
+fn print_json<T: serde::Serialize>(data: &T) -> Result<()> {
+    println!("{}", serde_json::to_string_pretty(data)?);
+    Ok(())
+}
+
 fn main() -> Result<()> {
     let args = Args::parse();
 
@@ -29,10 +34,14 @@ fn main() -> Result<()> {
                 Task::save(new_task).context("Failed to save new task")?;
                 println!("Success to add new task");
             }
-            TaskAction::List => {
+            TaskAction::List(args) => {
                 let tasks = Task::list().context("Failed to get Task list")?;
-                for task in tasks {
-                    println!("{:?}", task);
+                if args.list.json {
+                    print_json(&tasks)?;
+                } else {
+                    for task in &tasks {
+                        println!("{:?}", task);
+                    }
                 }
             }
         },
@@ -62,18 +71,26 @@ fn main() -> Result<()> {
             }
         },
         Target::User(action) => match action {
-            UserAction::List => {
+            UserAction::List(args) => {
                 let users = User::list().context("Failed to get User list")?;
-                for user in users {
-                    println!("{:?}", user);
+                if args.list.json {
+                    print_json(&users)?;
+                } else {
+                    for user in users {
+                        println!("{:?}", user);
+                    }
                 }
             }
         },
         Target::Project(action) => match action {
-            ProjectAction::List => {
+            ProjectAction::List(args) => {
                 let projects = Project::list().context("Failed to get Project list")?;
-                for project in projects {
-                    println!("{:?}", project);
+                if args.list.json {
+                    print_json(&projects)?;
+                } else {
+                    for project in projects {
+                        println!("{:?}", project);
+                    }
                 }
             }
         },
