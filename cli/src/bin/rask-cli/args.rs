@@ -22,6 +22,10 @@ pub enum Target {
     #[command(subcommand)]
     Task(TaskAction),
 
+    /// Manage documents
+    #[command(subcommand)]
+    Document(DocumentAction),
+
     /// Manage users
     #[command(subcommand)]
     User(UserAction),
@@ -37,6 +41,12 @@ pub enum TaskAction {
     Create(TaskCreateArgs),
 
     /// List tasks
+    List,
+}
+
+#[derive(Debug, Parser)]
+pub enum DocumentAction {
+    /// List documents
     List,
 }
 

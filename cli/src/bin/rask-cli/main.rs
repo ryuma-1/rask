@@ -3,6 +3,7 @@ mod args;
 use anyhow::{Context, Result};
 use args::*;
 use clap::Parser;
+use rask::document::*;
 use rask::project::*;
 use rask::task::*;
 use rask::user::*;
@@ -32,6 +33,14 @@ fn main() -> Result<()> {
                 let tasks = Task::list().context("Failed to get Task list")?;
                 for task in tasks {
                     println!("{:?}", task);
+                }
+            }
+        },
+        Target::Document(action) => match action {
+            DocumentAction::List => {
+                let documents = Document::list().context("Failed to get Document list")?;
+                for document in documents {
+                    println!("{:?}", document);
                 }
             }
         },

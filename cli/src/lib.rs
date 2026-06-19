@@ -1,5 +1,6 @@
 pub mod api_token;
 mod client;
+pub mod document;
 pub mod project;
 pub mod task;
 pub mod user;
