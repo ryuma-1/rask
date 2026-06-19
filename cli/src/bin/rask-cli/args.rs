@@ -37,19 +37,26 @@ pub enum TaskAction {
     Create(TaskCreateArgs),
 
     /// List tasks
-    List,
+    List(ListArgs),
 }
 
 #[derive(Debug, Parser)]
 pub enum UserAction {
     /// List users
-    List,
+    List(ListArgs),
 }
 
 #[derive(Debug, Parser)]
 pub enum ProjectAction {
     /// List projects
-    List,
+    List(ListArgs),
+}
+
+#[derive(Debug, Parser)]
+pub struct ListArgs {
+    /// Output in JSON format
+    #[arg(long)]
+    pub json: bool,
 }
 
 #[derive(Debug, Parser)]
