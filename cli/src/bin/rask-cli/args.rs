@@ -141,7 +141,7 @@ pub struct DocumentListArgs {
     #[arg(long)]
     pub end_at: Option<DateTime<Utc>>,
 
-    /// term duration. (created_at/updated_at/start_at/end_at のいずれかが必要)
+    /// term duration.
     #[arg(long, requires = "date_filter")]
     pub term_duration: Option<usize>,
 }

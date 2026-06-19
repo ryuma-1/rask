@@ -54,7 +54,8 @@ fn main() -> Result<()> {
                     args.start_at,
                     args.end_at,
                     args.term_duration,
-                );
+                )
+                .context("Failed to search documents")?;
 
                 for document in searched_documents {
                     println!("{:?}", document);
