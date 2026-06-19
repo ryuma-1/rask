@@ -42,7 +42,7 @@ pub enum TaskAction {
     Create(TaskCreateArgs),
 
     /// List tasks
-    List,
+    List(TaskListArgs),
 }
 
 #[derive(Debug, Parser)]
@@ -54,13 +54,20 @@ pub enum DocumentAction {
 #[derive(Debug, Parser)]
 pub enum UserAction {
     /// List users
-    List,
+    List(UserListArgs),
 }
 
 #[derive(Debug, Parser)]
 pub enum ProjectAction {
     /// List projects
-    List,
+    List(ProjectListArgs),
+}
+
+#[derive(Debug, Parser)]
+pub struct ListArgs {
+    /// Output in JSON format
+    #[arg(long)]
+    pub json: bool,
 }
 
 #[derive(Debug, Parser)]
@@ -91,12 +98,21 @@ pub struct TaskCreateArgs {
 }
 
 #[derive(Debug, Parser)]
+pub struct TaskListArgs {
+    #[command(flatten)]
+    pub list: ListArgs,
+}
+
+#[derive(Debug, Parser)]
 #[command(group(
     ArgGroup::new("date_filter")
         .args(["created_at", "updated_at", "start_at", "end_at"])
         .multiple(true)
 ))]
 pub struct DocumentListArgs {
+    #[command(flatten)]
+    pub list: ListArgs,
+
     /// Filter by document ID
     #[arg(long)]
     pub id: Option<usize>,
@@ -144,4 +160,16 @@ pub struct DocumentListArgs {
     /// term duration.
     #[arg(long, requires = "date_filter")]
     pub term_duration: Option<usize>,
+}
+
+#[derive(Debug, Parser)]
+pub struct UserListArgs {
+    #[command(flatten)]
+    pub list: ListArgs,
+}
+
+#[derive(Debug, Parser)]
+pub struct ProjectListArgs {
+    #[command(flatten)]
+    pub list: ListArgs,
 }
