@@ -15,6 +15,9 @@ pub struct Args {
 
     #[command(subcommand)]
     pub target: Target,
+
+    // #[arg(short = 'n', long = "username",global=true)]
+    // pub target_user: Option<String>,
 }
 
 #[derive(Debug, Parser)]
@@ -101,6 +104,8 @@ pub struct TaskCreateArgs {
 pub struct TaskListArgs {
     #[command(flatten)]
     pub list: ListArgs,
+    #[arg(short = 'n', long = "username")]
+    pub username: Option<String>,
 }
 
 #[derive(Debug, Parser)]

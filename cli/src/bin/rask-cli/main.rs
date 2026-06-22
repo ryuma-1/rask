@@ -1,4 +1,5 @@
 mod args;
+mod utils;
 
 use anyhow::{Context, Result};
 use args::*;
@@ -8,6 +9,8 @@ use rask::project::*;
 use rask::task::*;
 use rask::user::*;
 use rask::Rask;
+use crate::utils::filter_tasks_by_user;
+
 
 fn print_json<T: serde::Serialize>(data: &T) -> Result<()> {
     println!("{}", serde_json::to_string_pretty(data)?);
@@ -35,7 +38,10 @@ fn main() -> Result<()> {
                 println!("Success to add new task");
             }
             TaskAction::List(args) => {
-                let tasks = Task::list().context("Failed to get Task list")?;
+                let mut tasks = Task::list().context("Failed to get Task list")?;
+                if let Some(target_user) = &args.username {
+                    tasks = filter_tasks_by_user(tasks, target_user)?;
+                } 
                 if args.list.json {
                     print_json(&tasks)?;
                 } else {
@@ -103,3 +109,5 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+
