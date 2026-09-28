@@ -11,6 +11,7 @@ CLI tool to manage Rask
 - List tasks, documents, users, and projects
 - Create tasks from the command line
 - Search documents by ID, keyword, creator, project, and date fields
+- Output list results in JSON format
 - Configure the Rask API key and server URL with environment variables or CLI options
 
 ## Install
@@ -99,6 +100,31 @@ rask-cli project list
 | `user list` | List users |
 | `project list` | List projects |
 
+### JSON Output
+
+All `list` commands accept `--json` to print the results as pretty-printed JSON instead of the default debug format.
+
+```bash
+rask-cli task list --json
+rask-cli document list --json
+rask-cli user list --json
+rask-cli project list --json
+```
+
+`--json` can be combined with document search options:
+
+```bash
+rask-cli document list --content "rust" "api" --json
+```
+
+### Filter Tasks by User
+
+```bash
+rask-cli task list --username "nomlab"
+```
+
+Only tasks whose assignee screen name exactly matches the given name are listed. If no user has that screen name, the command fails with `User not found`.
+
 ### Create Tasks
 
 ```bash
@@ -140,28 +166,42 @@ rask-cli document list \
 | Command | Description |
 |---|---|
 | `rask-cli task create [OPTIONS]` | Create a new task |
-| `rask-cli task list` | List tasks |
+| `rask-cli task list [OPTIONS]` | List tasks |
 | `rask-cli document list [OPTIONS]` | List documents, optionally searched |
-| `rask-cli user list` | List users |
-| `rask-cli project list` | List projects |
+| `rask-cli user list [OPTIONS]` | List users |
+| `rask-cli project list [OPTIONS]` | List projects |
+
+### `list` Common Options
+
+The following option is available for `task list`, `document list`, `user list`, and `project list`.
+
+| Option | Type | Description |
+|---|---|---|
+| `--json` | Flag | Output results in JSON format |
+
+### `task list`
+
+| Option | Type | Description |
+|---|---|---|
+| `-n, --username <USERNAME>` | String | Filter tasks by assignee screen name |
 
 ### `task create`
 
 | Option | Type | Required | Description |
 |---|---|---:|---|
-| `-t, --title <TITLE>` | String | Yes | Task title |
-| `-a, --assigner-name <ASSIGNER_NAME>` | String | Yes | Assignee screen name |
-| `-s, --state <STATE>` | `todo`, `done`, or `someday` | No | Task state. Defaults to `todo` |
-| `-p, --project-name <PROJECT_NAME>` | String | No | Project name |
+| `--title <TITLE>` | String | Yes | Task title |
+| `--assigner-name <ASSIGNER_NAME>` | String | Yes | Assignee screen name |
+| `--state <STATE>` | `todo`, `done`, or `someday` | No | Task state. Defaults to `todo` |
+| `--project-name <PROJECT_NAME>` | String | No | Project name |
 | `--due-at <DATE>` | String | No | Due date sent to the server |
-| `-d, --description <DESCRIPTION>` | String | No | Task description |
+| `--description <DESCRIPTION>` | String | No | Task description |
 
 ### `document list`
 
 | Option | Type | Description |
 |---|---|---|
 | `--id <ID>` | Integer | Search by document ID |
-| `-c, --content <KEYWORD>...` | String list | Search by keywords in content |
+| `--content <KEYWORD>...` | String list | Search by keywords in content |
 | `--creator-id <ID>` | Integer | Search by creator ID |
 | `--creator-name <KEYWORD>...` | String list | Search by keywords in creator name |
 | `--description <KEYWORD>...` | String list | Search by keywords in description |
@@ -206,6 +246,18 @@ rask-cli document list \
   --content "rust" "api" \
   --created-at "2024-09-26T00:00:00Z" \
   --term-duration 3
+```
+
+### List Tasks as JSON
+
+```bash
+rask-cli task list --json
+```
+
+### List a User's Tasks as JSON
+
+```bash
+rask-cli task list --username "nomlab" --json
 ```
 
 ## Notes
