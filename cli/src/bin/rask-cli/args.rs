@@ -6,11 +6,11 @@ use rask::task::TaskState;
 #[command(author, version, about)]
 pub struct Args {
     /// API Key for communicate with Rask
-    #[arg(short, long, required = true, env = "RASK_API_KEY", global = true)]
+    #[arg(short, long, env = "RASK_API_KEY", global = true, required = false)]
     pub api_key: String,
 
     /// API Key for communicate with Rask
-    #[arg(short, long, required = true, env = "RASK_URL", global = true)]
+    #[arg(short, long, env = "RASK_URL", global = true, required = false)]
     pub url: String,
 
     #[command(subcommand)]
