@@ -9,7 +9,7 @@ pub struct Args {
     #[arg(short, long, env = "RASK_API_KEY", global = true, required = false)]
     pub api_key: String,
 
-    /// API Key for communicate with Rask
+    /// URL of the Rask server
     #[arg(short, long, env = "RASK_URL", global = true, required = false)]
     pub url: String,
 
@@ -22,18 +22,26 @@ pub struct Args {
 #[derive(Debug, Parser)]
 pub enum Target {
     /// Manage tasks
+    ///
+    /// Create new tasks or list existing tasks on Rask.
     #[command(subcommand)]
     Task(TaskAction),
 
     /// Manage documents
+    ///
+    /// List and search documents on Rask.
     #[command(subcommand)]
     Document(DocumentAction),
 
     /// Manage users
+    ///
+    /// List users registered on Rask.
     #[command(subcommand)]
     User(UserAction),
 
     /// Manage projects
+    ///
+    /// List projects registered on Rask.
     #[command(subcommand)]
     Project(ProjectAction),
 }
@@ -41,27 +49,47 @@ pub enum Target {
 #[derive(Debug, Parser)]
 pub enum TaskAction {
     /// Create new task
+    ///
+    /// Register a new task on Rask. The assigner and project are given by name
+    /// and resolved to their IDs before the task is saved.
+    /// The state defaults to "todo" when omitted.
     Create(TaskCreateArgs),
 
     /// List tasks
+    ///
+    /// Fetch all tasks from Rask and print them.
+    /// Use --username to show only tasks assigned to that user,
+    /// and --json to print them as pretty JSON.
     List(TaskListArgs),
 }
 
 #[derive(Debug, Parser)]
 pub enum DocumentAction {
     /// List documents
+    ///
+    /// Fetch all documents from Rask and print the ones matching every given filter.
+    /// Keyword filters (--content, --description, --creator-name, --project-name)
+    /// accept multiple values and match only when all keywords are contained.
+    /// Date filters (--created-at, --updated-at, --start-at, --end-at) match
+    /// documents within ±--term-duration days of the given date (exact match by default).
     List(DocumentListArgs),
 }
 
 #[derive(Debug, Parser)]
 pub enum UserAction {
     /// List users
+    ///
+    /// Fetch all users from Rask and print them.
+    /// Use --json to print them as pretty JSON.
     List(UserListArgs),
 }
 
 #[derive(Debug, Parser)]
 pub enum ProjectAction {
     /// List projects
+    ///
+    /// Fetch all projects from Rask and print them.
+    /// Use --json to print them as pretty JSON.
     List(ProjectListArgs),
 }
 
@@ -103,6 +131,7 @@ pub struct TaskCreateArgs {
 pub struct TaskListArgs {
     #[command(flatten)]
     pub list: ListArgs,
+    /// Show only tasks assigned to this user (screen name). Ex: "john"
     #[arg(short = 'n', long = "username")]
     pub username: Option<String>,
 }
@@ -161,7 +190,7 @@ pub struct DocumentListArgs {
     #[arg(long)]
     pub end_at: Option<DateTime<Utc>>,
 
-    /// term duration.
+    /// Allowed range in days around the date filters. Ex: 3 matches ±3 days
     #[arg(long, requires = "date_filter")]
     pub term_duration: Option<usize>,
 }
