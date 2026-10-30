@@ -119,7 +119,7 @@ pub struct TaskCreateArgs {
     pub project_name: Option<String>,
 
     /// Dead line of new task. Ex: "2036/2/6" or "2036-2-6"
-    #[arg(short = 't', long)]
+    #[arg(long)]
     pub due_at: Option<String>,
 
     /// Description of new task. Ex: "Do something"
@@ -205,4 +205,27 @@ pub struct UserListArgs {
 pub struct ProjectListArgs {
     #[command(flatten)]
     pub list: ListArgs,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Args;
+
+    #[test]
+    fn command_line_help_is_up_to_date() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/docs/CommandLineHelp.md");
+        let expected = clap_markdown::help_markdown::<Args>();
+
+        if std::env::var_os("UPDATE_DOCS").is_some() {
+            std::fs::create_dir_all(std::path::Path::new(path).parent().unwrap()).unwrap();
+            std::fs::write(path, &expected).unwrap();
+            return;
+        }
+
+        let actual = std::fs::read_to_string(path).unwrap_or_default();
+        assert_eq!(
+            actual, expected,
+            "docs/CommandLineHelp.md が古いです。`UPDATE_DOCS=1 cargo test` で更新してください"
+        );
+    }
 }
